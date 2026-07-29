@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davin Solano — Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0F1316;
+    --surface: #171D22;
+    --surface-2: #1E262C;
+    --line: #2A333A;
+    --text: #ECE7DD;
+    --muted: #8A9199;
+    --accent: #F2A65A;
+    --accent-dim: #C97F3E;
+    --add: #7FBF8F;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(242,166,90,0.06), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(127,191,143,0.05), transparent 35%);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    padding: 40px 16px 80px;
+    position: relative;
+  }
+
+  a{ color: var(--accent); }
+
+  /* FLOATING PDF BUTTON STYLE */
+  .pdf-trigger-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 1000;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--surface-2);
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pdf-trigger-btn:hover {
+    background: var(--accent);
+    color: var(--ink);
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(242,166,90,0.3);
+  }
+
+  .window{
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    overflow: hidden;
+  }
+
+  .chrome{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .dot{ width: 11px; height: 11px; border-radius: 50%; }
+  .dot.r{ background: #E0685A; }
+  .dot.y{ background: #E5B85C; }
+  .dot.g{ background: #7FBF8F; }
+  .chrome .path{
+    margin: 0 auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .term{
+    padding: clamp(20px, 4vw, 48px);
+  }
+
+  .prompt{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .prompt::before{ content: "davin@resume "; color: var(--add); }
+  .prompt::after{ content: attr(data-suffix); }
+  .prompt .sym{ color: var(--accent); }
+
+  /* HERO */
+  .hero{ padding-bottom: 36px; border-bottom: 1px dashed var(--line); margin-bottom: 40px; }
+  .hero-flex{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  .hero-text{ flex: 1; min-width: 0; }
+  .avatar-block{ flex-shrink: 0; text-align: center; }
+  .avatar-label{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .avatar-label .sym{ color: var(--accent); }
+  .avatar-frame{
+    width: 108px;
+    height: 108px;
+    border: 1px solid var(--accent-dim);
+    border-radius: 8px;
+    padding: 4px;
+    background: var(--surface-2);
+  }
+  .avatar-frame img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    display: block;
+    filter: grayscale(35%) contrast(1.05);
+  }
+  .hero-out{ font-family: var(--mono); }
+  .name{
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: clamp(28px, 5.5vw, 46px);
+    letter-spacing: -0.02em;
+    margin: 6px 0 2px;
+    color: var(--text);
+  }
+  .name .cursor{
+    display: inline-block;
+    width: 0.5ch;
+    background: var(--accent);
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .title-line{
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: clamp(14px, 2.6vw, 17px);
+    margin: 0 0 18px;
+  }
+
+  .summary{
+    max-width: 60ch;
+    color: var(--text);
+    font-size: 15.5px;
+  }
+
+  /* CONTACT LAYOUT ADJUSTMENT */
+  .contact-column-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .contact-column-block span { color: var(--text); }
+
+  /* SECTION HEADERS */
+  section{ margin-bottom: 44px; }
+  section:last-of-type{ margin-bottom: 0; }
+  .sec-head{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .sec-head h2{
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+    font-weight: 600;
+  }
+  .sec-head .rule{
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* EXPERIENCE — git log style */
+  .commit{
+    position: relative;
+    padding: 0 0 26px 26px;
+    border-left: 2px solid var(--line);
+    margin-left: 6px;
+  }
+  .commit:last-child{ padding-bottom: 0; }
+  .commit::before{
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2px solid var(--accent);
+  }
+  .commit-meta{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-dim);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-bottom: 6px;
+  }
+  .commit-meta .hash{ color: var(--accent); }
+  .commit-role{
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 2px;
+  }
+  .commit-role .at{ color: var(--muted); font-weight: 400; }
+  .commit-project{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .commit-project b{ color: var(--text); font-weight: 500; }
+  .diff{ list-style: none; margin: 0; padding: 0; font-size: 14.5px; }
+  .diff li{
+    padding-left: 22px;
+    position: relative;
+    margin-bottom: 5px;
+    color: #D7D2C7;
+  }
+  .diff li::before{
+    content: "+";
+    position: absolute;
+    left: 4px;
+    color: var(--add);
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+  .tech-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--muted);
+    background: var(--surface-2);
+  }
+
+  /* SKILLS — package.json style */
+  .pkg{
+    font-family: var(--mono);
+    font-size: 13.5px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px 22px;
+    overflow-x: auto;
+  }
+  .pkg .k{ color: var(--accent); }
+  .pkg .s{ color: var(--add); }
+  .pkg .punc{ color: var(--muted); }
+  .pkg-line{ white-space: pre; }
+
+  /* EDUCATION + CERTS */
+  .edu-card{
+    padding: 16px 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .edu-card:last-child{ margin-bottom: 0; }
+  .edu-top{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .edu-name{ font-weight: 600; font-size: 15px; color: var(--text); }
+  .edu-date{ font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .edu-org{ font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+  .edu-note{ font-size: 13.5px; color: #D7D2C7; margin-top: 8px; }
+  .edu-link{ font-family: var(--mono); font-size: 12px; word-break: break-all; }
+
+  /* LANGUAGES */
+  .lang-row{ display: flex; gap: 10px; flex-wrap: wrap; }
+  .lang-chip{
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer{
+    margin-top: 50px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--line);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 560px){
+    .commit-meta{ font-size: 11px; }
+    .pkg{ font-size: 12px; }
+    .hero-flex{ flex-direction: column-reverse; align-items: flex-start; }
+    .avatar-block{ align-self: flex-start; }
+    .pdf-trigger-btn { position: fixed; bottom: 20px; right: 20px; top: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .name .cursor{ animation: none; }
+  }
+
+  /* INK-FRIENDLY PDF CONVERSION ENGINE */
+  @media print {
+    body {
+      background: #FFFFFF !important;
+      background-image: none !important;
+      color: #111111 !important;
+      padding: 0 !important;
+    }
+    .pdf-trigger-btn, .chrome {
+      display: none !important;
+    }
+    .window {
+      border: none !important;
+      box-shadow: none !important;
+      background: #FFFFFF !important;
+      max-width: 100% !important;
+    }
+    .term {
+      padding: 0 !important;
+    }
+    .name, .commit-role, .edu-name, .avatar-label {
+      color: #000000 !important;
+    }
+    .prompt {
+      color: #555555 !important;
+    }
+    .title-line, .commit-meta, .commit-meta .hash, .pkg .k, .lang-chip {
+      color: #333333 !important;
+      border-color: #999999 !important;
+    }
+    .summary, .diff li, .edu-note {
+      color: #222222 !important;
+    }
+    .pkg {
+      background: #FAFAFA !important;
+      border: 1px solid #CCCCCC !important;
+    }
+    .pkg .s, .diff li::before {
+      color: #006600 !important;
+    }
+    .edu-card, .tag, .avatar-frame {
+      background: #FAFAFA !important;
+      border: 1px solid #DDDDDD !important;
+      color: #444444 !important;
+    }
+    .commit {
+      border-left: 2px solid #CCCCCC !important;
+    }
+    .commit::before {
+      background: #FFFFFF !important;
+      border: 2px solid #333333 !important;
+    }
+    a {
+      color: #002244 !important;
+      text-decoration: underline !important;
+    }
+  }
+/style>
+</head>
+<body>
+
+<!-- FLOATING TOP-RIGHT INK-FRIENDLY BUTTON -->
+<button class="pdf-trigger-btn" onclick="window.print()">
+  <span>PDF</span>
+</button>
+
+<div class="window">
+  <div class="chrome">
+    <div class="dot r"></div>
+    <div class="dot y"></div>
+    <div class="dot g"></div>
+    <div class="path">~/davin-solano/resume.sh</div>
+  </div>
+
+  <div class="term">
+
+    <!-- HERO -->
+    <div class="hero">
+      <p class="prompt"><span class="sym">$</span> whoami</p>
+      <div class="hero-flex">
+        <div class="hero-text">
+          <div class="hero-out">
+            <h1 class="name">Davin Solano<span class="cursor">&nbsp;</span></h1>
+            <p class="title-line">// backend developer</p>
+          </div>
+          <p class="summary">Backend developer with strong communication skills, looking to grow through hands-on experience in a professional setting — comfortable across the stack from ServiceNow workflows to Node.js services.</p>
+          
+          <!-- STACKED LAYOUT: LOC DIRECTLY ABOVE LINKEDIN LINK -->
+          <div class="contact-column-block">
+            <div>loc: <span>Taytay, Rizal, PH</span></div>
+            <div>email: <span><a href="mailto:davinsolano@gmail.com" target="_blank" rel="noopener">davinsolano@gmail.com</a></span></div>
+            <div>linkedin: <span><a href="https://www.linkedin.com/in/davin-solano-bab360112" target="_blank" rel="noopener">/in/davin-solano-bab360112</a></span></div>
+          </div>
+        </div>
+        <div class="avatar-block">
+          <p class="avatar-label"><span class="sym">&gt;</span> photo.jpg</p>
+          <div class="avatar-frame">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAQABAADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKrobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD2SilNFAxKdTqDQAhpKKKAACn0yn0ALRTaWgBKUiiloASilpKBBS0lLQMKWkpaQBSUUtMBKKKWgBAKWiigBTSGlooASilooAKKWikAhpDTqbTAKWiigAooooAKKKWgApaSloAM0hFLQaAEooooAWg0UtIBRSU6imA2nUUUgG0U6m0xBTqKKBjadRRQAtBopDQAUUUtACUmKWikAUUUUwFoopM0AFFNp1AhtOoooGFFFFIBaSm06mIWkpaSgY2inUUALSUCigQ6ikooGIaQ0tNoAUUtAooAKKM0UANop1FADaKdTaACnUGigANNpTSUAFOoptACUtFFACU8U2igAoop1ABmkNJRQAppKKKAFxSU6igQUUU2gApKKKACinGm0ALSZoNFABRRRQAUUUUDCkpaDQAlJS0lAhDRilxS0DIqbRRQA4UpoooASiiigBtPpKKACloooAKKKKAFoooxQAlLRSigBKWkp1ADaWiigANFFFABSGnUUAJRRS0AApaQUtABRmg0UAFJS0lABSGlooAKKKWkAlLRS0AFJS0lMBaKSloAKKBRQAUtFFABRRRQ66m06gAooopAFBpaSmAUUUUALRRRQAUhoopAFGabTqYBRRTaQDqDRRTAKKKKAG06iigApaSigBaSlpDQAtJRmigAptOooAKKKKACilooASm06lxQAyinUUANoop1ADadQaKACiiloASiiigAoopaAEoooNADadRRQA2inUUAFFFFABRSmkoAKKBRQAUUUYooEJS0UlAwooooAKDRRQIbRTqKAG0U6m0DClxSUUAJRS0lAgop2aBQMbRRQaAEopaKAEpKU0UARCloooASlopaAClpM06gBtFBpKAHUlFJQA6ikpaQC0UlLTASloooADSUtIaACilooAKWkooAKKWigBKWiloASilooASkpaUikAlFFFABRS0maYBRQaWgAzTs02igBaXFJRQAUUUUAJRQaKADNFGaKAClpKEoAKWm04HdQAU4UUtACU6m1WvdRitE+b5pf4Y16tQBaHzUVlGXVZ9vk21vb/9d2yfyWqt3JqFsjedqUW7+FVjx/WgRv0zzV/vVw73mpXP7v7X5397bGf/ANVEltrzf8ezRbf7s60AduJPM+792lwtcBc3HiCy+9Pat/0zVSKjj8ZzxzrHJ9n3f9NNy/zoA9FIoHzVxlv41X5vOtkVV/5aRyZrSs/FelX/APqdVihkX/lnJ8p/+vQB0JphPmfxfLVeLyp/3klykn+63FT/ALpfmVqBgZYv71L5q0wyxf8APWjzV/3qAJN/+zTXuIo/l/ib+Gq0lzL8qxwfeqWO32/3NzUAO8xW/wBZLu/2akEsTfxU0R7ak2UgEB3UlIY1/u0uGX/apgPopoO6nUAJS0UUAFBoooADRRRQAUlLSUAFFLRQAlLSUtABRRQaACkp1JQAUCiigAopaM0AJmikpaBBRmiigAooooGJRRS0AGaKSigAoopaACkpTRQAhptPpKAFooooASilpKBBRRRQA2iilNACUlLTqBjaKKdQIbSU+m0DCkpxpKAEpKWkoAZSUYpaBBRRRQMWilpKAAim06igBKWiigBKWiloASgUUUAOpDSmjNADaKWigBaKKWgBKSloFABRRiigApaKKAEooopAFLRS0wEoooNAD0lLSUAFFFFABRRRQA7NJRRQAlLSUGgAooooAKKWkoAM0lBqOQ7U/wB2gCWj7tIj7tu3+KnmgquelaRE+XWdqF21y/2SNvLX+OT2oGS3d3Lc/ubJvLi/wCWs/8Ad9lqAvBZf6lf96VqjlnigtV8tf3Cfd/z6VyuueJdiffer97bGf/ANVEltrzf8ezRbf7s60AduJPM+792lwtcBc3HiCy+9Pat/0zVSKjj8ZzxzrHJ9n3f9NNy/zoA9FIoHzVxlv41X5vOtkVV/5aRyZrSs/FelX/APqdVihkX/lnJ8p/+vQB0JphPmfxfLVeLyp/3klykn+63FT/ALpfmVqBgZYv71L5q0wyxf8APWjzV/3qAJN/+zTXuIo/l/ib+Gq0lzL8qxwfeqWO32/3NzUAO8xW/wBZLu/2akEsTfxU0R7ak2UgEB3UlIY1/u0uGX/apgPopoO6nUAJS0UUAFBoooADRRRQAUlLSUAFFLRQAlLSUtABRRQaACkp1JQAUCiigAopaM0AJmikpaBBRmiigAooooGJRRS0AGaKSigAoopaACkpTRQAhptPpKAFooooASilpKBBRRRQA2iilNACUlLTqBjaKKdQIbSU+m0DCkpxpKAEpKWkoAZSUYpaBBRRRQMWilpKAAim06igBKWiigBKWiloASgUUUAOpDSmjNADaKWigBaKKWgBKSloFABRRiigApaKKAEooopAFLRS0wEoooNAD0lLSUAFFFFABRRRQA7NJRRQAlLSUGgAooooAKKWkoAM0lBqOQ7U/wB2gCWj7tIj7tu3+KnmgquelaRE+XWdqF21y/2SNvLX+OT2oGS3d3Lc/ubJvLi/wCWs/8Ad9lqAvBZf6lf96VqjlnigtV8tf3Cfd/z6VyuueJdiffer97bGf/ANVEltrzf8ezRbf7s60AduJPM+792lwtcBc3HiCy+9Pat/0zVSKjj8ZzxzrHJ9n3f9NNy/zoA9FIoHzVxlv41X5vOtkVV/5aRyZrSs/FelX/APqdVihkX/lnJ8p/+vQB0JphPmfxfLVeLyp/3klykn+63FT/ALpfmVqBgZYv71L5q0wyxf8APWjzV/3qAJN/+zTXuIo/l/ib+Gq0lzL8qxwfeqWO32/3NzUAO8xW/wBZLu/2akEsTfxU0R7ak2UgEB3UlIY1/u0uGX/apgPopoO6nUAJS0UUAFBoooADRRRQAUlLSUAFFLRQAlLSUtABRRQaACkp1JQAUCiigAopaM0AJmikpaBBRmiigAooooGJRRS0AGaKSigAoopaACkpTRQAhptPpKAFooooASilpKBBRRRQA2iilNACUlLTqBjaKKdQIbSU+m0DCkpxpKAEpKWkoAZSUYpaBBRRRQMWilpKAAim06igBKWiigBKWiloASgUUUAOpDSmjNADaKWigBaKKWgBKSloFABRRiigApaKKAEooopAFLRS0wEoooNAD0lLSUAFFFFABRRRQA7NJRRQAlLSUGgAooooAKKWkoAM0lBqOQ7U/wB2gCWj7tIj7tu3+KnmgquelaRE+XWdqF21y/2SNvLX+OT2oGS3d3Lc/ubJvLi/wCWs/8Ad9lqAvBZf6lf96VqjlnigtV8tf3Cfd/z6VyuueJdiffer97bGf/ANVEltrzf8ezRbf7s60AduJPM+792lwtcBc3HiCy+9Pat/0zVSKjj8ZzxzrHJ9n3f9NNy/zoA9FIoHzVxlv41X5vOtkVV/5aRyZrSs/FelX/APqdVihkX/lnJ8p/+vQB0JphPmfxfLVeLyp/3klykn+63FT/ALpfmVqBgZYv71L5q0wyxf8APWjzV/3qAJN/+zTXuIo/l/ib+Gq0lzL8qxwfeqWO32/3NzUAO8xW/wBZLu/2akEsTfxU0R7ak2UgEB3UlIY1/u0uGX/apgPopoO6nUAJS0UUAFBoooADRRRQAUlLSUAFFLRQAlLSUtABRRQaACkp1JQAUCiigAopaM0AJmikpaBBRmiigAooooGJRRS0AGaKSigAoopaACkpTRQAhptPpKAFooooASilpKBBRRRQA2iilNACUlLTqBjaKKdQIbSU+m0DCkpxpKAEpKWkoAZSUYpaBBRRRQMWilpKAAim06igBKWiigBKWiloASgUUUAOpDSmjNADaKWigBaKKWgBKSloFABRRiigApaKKAEooopAFLRS0wEoooNAD0lLSUAFFFFABRRRQA7NJRRQAlLSUGgAooooAKKWkoAM0lBqOQ7U/b">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <p class="prompt"><span class="sym">$</span> git log --oneline --graph experience/</p>
+      <div class="sec-head"><h2>Professional Experience</h2><div class="rule"></div></div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">a1f92c3</span><span>Sep 2023 – Dec 2023</span></div>
+        <p class="commit-role">Back End Developer <span class="at">@ Sysplex IT Solutions, Pasay</span></p>
+        <ul class="diff">
+          <li>Integrated UI improvements and debugged codebases using ServiceNow</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span><span class="tag">ServiceNow</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">7cd410e</span><span>Sep 2022 – Mar 2023</span></div>
+        <p class="commit-role">ServiceNow Developer <span class="at">@ GECO Asia Pte Ltd, Pasig</span></p>
+        <ul class="diff">
+          <li>Configured ServiceNow workflows, UI policies, and analytics reports</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span><span class="tag">ServiceNow</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">3b8e7a1</span><span>Jan 2022 – Jun 2022</span></div>
+        <p class="commit-role">Developer <span class="at">@ Podcast Network Asia, Pasig</span></p>
+        <p class="commit-project">project: <b>Podmachine</b></p>
+        <ul class="diff">
+          <li>Supported end users and applied OOP for cleaner, maintainable code</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">e2019f4</span><span>Jul 2021 – Oct 2021</span></div>
+        <p class="commit-role">Full Stack Developer <span class="at">@ CloudSwyft Global Systems Inc, Makati</span></p>
+        <p class="commit-project">project: <b>CloudSwyft Academy</b></p>
+        <ul class="diff">
+          <li>Built front-end web apps with designers, for mobile and desktop</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span><span class="tag">React</span><span class="tag">HTML/CSS</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">9d4c2b6</span><span>Jan 2021 – Jun 2021</span></div>
+        <p class="commit-role">Junior Analyst <span class="at">@ Technomancer, Commonwealth</span></p>
+        <p class="commit-project">project: <b>Quantagoods</b></p>
+        <ul class="diff">
+          <li>Maintained business tools and databases using field-collected data</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">5a71d08</span><span>Mar 2020 – Sep 2020</span></div>
+        <p class="commit-role">Software Developer <span class="at">@ Monstronauts Inc, Makati</span></p>
+        <ul class="diff">
+          <li>Built and optimized software features for performance and security</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">JavaScript</span></div>
+      </div>
+
+      <div class="commit">
+        <div class="commit-meta"><span class="hash">0f63a95</span><span>Feb 2018 – Feb 2020</span></div>
+        <p class="commit-role">Backend Developer <span class="at">@ Supergene Global Services Inc, Mandaluyong</span></p>
+        <p class="commit-project">project: <b>Facebook OMG Quiz App</b> — facebook.com/omginstantgame/</p>
+        <ul class="diff">
+          <li>Fixed vulnerabilities and improved data accuracy in web crawling systems</li>
+        </ul>
+        <div class="tech-tags"><span class="tag">Node.js</span><span class="tag">MongoDB</span><span class="tag">Vue.js</span></div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <p class="prompt"><span class="sym">$</span> cat package.json</p>
+      <div class="sec-head"><h2>Skills &amp; Stack</h2><div class="rule"></div></div>
+      <div class="pkg">
+        <div class="pkg-line"><span class="punc">{</span></div>
+        <div class="pkg-line">  <span class="k">"languages"</span><span class="punc">:</span> [<span class="s">"C"</span>, <span class="s">"C#"</span>, <span class="s">"JavaScript"</span>, <span class="s">"Rails"</span>, <span class="s">"ServiceNow"</span>]<span class="punc">,</span></div>
+        <div class="pkg-line">  <span class="k">"stack"</span><span class="punc">:</span> [<span class="s">"Node.js"</span>, <span class="s">"MongoDB"</span>, <span class="s">"Vue.js"</span>, <span class="s">"React"</span>, <span class="s">"HTML/CSS"</span>]<span class="punc">,</span></div>
+        <div class="pkg-line">  <span class="k">"strengths"</span><span class="punc">:</span> [<span class="s">"Database Management"</span>, <span class="s">"Bug Fixing"</span>, <span class="s">"Problem Solving"</span>, <span class="s">"Team Collaboration"</span>]</div>
+        <div class="pkg-line"><span class="punc">}</span></div>
+      </div>
+    </section>
+
+    <!-- EDUCATION + CERTS -->
+    <section id="education">
+      <p class="prompt"><span class="sym">$</span> cat education.md</p>
+      <div class="sec-head"><h2>Education &amp; Certificates</h2><div class="rule"></div></div>
+
+      <div class="edu-card">
+        <div class="edu-top">
+          <div class="edu-name">Bachelor of Science in Computer Science</div>
+          <div class="edu-date">Aug 2013 – Jun 2018</div>
+        </div>
+        <div class="edu-org">University of the Philippines Diliman, Quezon City</div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-top">
+          <div class="edu-name">Data Science Certificate</div>
+          <div class="edu-date">Aug 2021 – Present</div>
+        </div>
+        <div class="edu-org">CloudSwyft</div>
+        <div class="edu-note">Training program to help power CloudSwyft's project of building a responsive website.</div>
+        <div class="edu-link"><a href="https://www.credential.net/ea65e257-7a69-430a-9d8f-86d3af6ed12b" target="_blank" rel="noopener">credential.net/ea65e257-7a69-430a-9d8f-86d3af6ed12b</a> <span style="color:var(--muted)">#acc.Nlb4nT98</span></div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-top">
+          <div class="edu-name">Ruby on Rails CRUD App Development and TDD</div>
+          <div class="edu-date">Jun 2026 – Present</div>
+        </div>
+        <div class="edu-org">Alison</div>
+        <div class="edu-link"><a href="https://alison.com/user/pdf/1274/1" target="_blank" rel="noopener">alison.com/user/pdf/1274/1</a></div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-top">
+          <div class="edu-name">Ruby on Rails for Web Applications Development</div>
+          <div class="edu-date">Jul 2026 – Present</div>
+        </div>
+        <div class="edu-org">Alison</div>
+        <div class="edu-link"><a href="https://alison.com/user/pdf/1249/1" target="_blank" rel="noopener">alison.com/user/pdf/1249/1</a></div>
+      </div>
+    </section>
+
+    <!-- LANGUAGES -->
+    <section id="languages">
+      <p class="prompt"><span class="sym">$</span> locale -a</p>
+      <div class="sec-head"><h2>Fluent In</h2><div class="rule"></div></div>
+      <div class="lang-row">
+        <span class="lang-chip">English</span>
+        <span class="lang-chip">Filipino</span>
+      </div>
+    </section>
+
+    <footer>
+      process exited 0 — thanks for reading, Davin's resume.sh
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>
