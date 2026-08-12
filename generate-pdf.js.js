@@ -4,13 +4,11 @@ const fs = require('fs');
 
 (async () => {
   try {
-    // Ensure the public directory exists
     const publicDir = path.join(__dirname, 'public');
     if (!fs.existsSync(publicDir)) {
       fs.mkdirSync(publicDir);
     }
 
-    // Default Chrome paths depending on Operating System
     let executablePath = '';
     if (process.platform === 'win32') {
       executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -27,23 +25,19 @@ const fs = require('fs');
     });
 
     const page = await browser.newPage();
-
-    // Load local index.html
     const indexPath = path.join(__dirname, 'index.html');
     await page.goto(`file://${indexPath}`, { waitUntil: 'networkidle0' });
 
-    // Enable Classic GUI Mode so full resume renders
     await page.evaluate(() => {
       document.body.classList.add('gui-mode');
     });
 
-    // Generate PDF matching clean print styles
     const pdfPath = path.join(publicDir, 'resume.pdf');
     await page.pdf({
       path: pdfPath,
       format: 'A4',
       printBackground: true,
-      displayHeaderFooter: false, // Removes top dates & bottom URLs
+      displayHeaderFooter: false,
       margin: { top: '8mm', right: '10mm', bottom: '8mm', left: '10mm' }
     });
 
