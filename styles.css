@@ -363,11 +363,11 @@ body.gui-mode #toggle-view-btn {
   font-weight: 600;
 }
 
-/* PDF Print Mode (`Ctrl + P`) */
+/* PDF Print Mode (`Ctrl + P` / `Save as PDF`) */
 @media print {
   .view-toggle-wrapper, 
   #terminal-wrapper,
-  .classic-contact-links a[href$=".pdf"] { 
+  .classic-contact-links a[onclick*="print"] { 
     display: none !important; 
   }
 

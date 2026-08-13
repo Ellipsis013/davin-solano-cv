@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function focusInput() {
-  document.getElementById('terminal-input').focus();
+  if (!window.getSelection().toString()) {
+    document.getElementById('terminal-input').focus();
+  }
 }
 
 function toggleView() {
@@ -49,7 +51,7 @@ function processCommand(cmd) {
         <p>  <span class="highlight">certs</span>        - Certifications, IDs & verification links</p>
         <p>  <span class="highlight">projects</span>     - Key backend projects & live links</p>
         <p>  <span class="highlight">contact</span>      - Email, phone, and LinkedIn</p>
-        <p>  <span class="highlight">download</span>     - Download PDF Resume</p>
+        <p>  <span class="highlight">download</span>     - Open PDF / Print dialog</p>
         <p>  <span class="highlight">gui</span>          - Switch to standard 1-page paper view</p>
         <p>  <span class="highlight">clear</span>        - Clear the terminal screen</p>
       `;
@@ -169,14 +171,14 @@ function processCommand(cmd) {
     case 'download':
     case 'resume':
     case 'pdf':
-      const link = document.createElement('a');
-      link.href = '/resume.pdf';
-      link.download = 'Mel_Davin_Solano_Resume.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      if (!document.body.classList.contains('gui-mode')) {
+        toggleView();
+      }
+      setTimeout(() => {
+        window.print();
+      }, 300);
 
-      responseHTML = `<p class="highlight">Downloading resume... If the download doesn't start automatically, <a href="/resume.pdf" download="Mel_Davin_Solano_Resume.pdf">click here</a>.</p>`;
+      responseHTML = `<p class="highlight">Opening PDF prompt... Select <strong>"Save as PDF"</strong> in your browser window.</p>`;
       break;
 
     case 'clear':
