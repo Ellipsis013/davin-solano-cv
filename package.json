@@ -1,7 +1,5 @@
 {
   "name": "davin-portfolio",
   "version": "1.0.0",
-  "scripts": {
-    "build": "echo 'Build step skipped for static site deployment'"
-  }
+  "private": true
 }
